@@ -216,3 +216,46 @@ Current KB topics:
 - `kb/langgraph.md`
 - `kb/links.md`
 - `kb/python_interview.md`
+
+### RAG Evaluation
+
+The project includes a custom evaluation framework for measuring retrieval quality and response grounding. It uses lightweight custom metrics instead of RAGAS (which has compatibility issues with local Ollama models).
+
+Commands:
+```bash
+uv run python -m eval.run_eval                      # full evaluation
+uv run python -m eval.run_eval --retrieval-only      # skip LLM judge (fast)
+uv run python -m eval.run_eval --samples 5           # first N samples only
+```
+
+Evaluation dataset:
+- 19 curated Q&A pairs in `eval/dataset.json`, sourced from KB files.
+- Distribution: 7 langchain, 6 langgraph, 4 python_interview, 2 out-of-scope (negative) questions.
+
+Retrieval metrics (deterministic, no LLM calls):
+- **Context precision** — fraction of retrieved chunks from expected source files.
+- **Context recall** — fraction of expected sources represented in retrieved chunks.
+- **Hit rate** — binary, did at least one relevant chunk appear.
+- **MRR** — reciprocal rank of first relevant chunk.
+
+Grounding metrics (LLM-as-judge):
+- **Faithfulness** — scores 1-5 whether every claim in the answer is supported by the retrieved context.
+- **Correctness** — scores 1-5 whether the answer captures key points from the reference answer.
+- **Token F1** — deterministic token-level overlap as a bias-free baseline.
+
+Pipeline per sample: retrieve (ChromaDB) → generate (tutor prompts + Ollama) → judge (LLM-as-judge) → aggregate.
+
+Key modules:
+- `eval/dataset.json` — ground truth Q&A pairs.
+- `eval/prompts.py` — judge prompt templates.
+- `eval/metrics/retrieval.py` — deterministic retrieval metrics.
+- `eval/metrics/grounding.py` — LLM-as-judge + token F1.
+- `eval/runner.py` — orchestrator.
+- `eval/report.py` — console summary table + JSON output to `eval/results/`.
+- `eval/run_eval.py` — CLI entry point.
+
+Reuses existing infrastructure: `get_retriever()`, `invoke_llm()`, tutor prompts. No new dependencies.
+
+Tests:
+- `tests/test_eval_metrics.py` — unit tests for deterministic metrics (no services needed).
+- `tests/test_rag_eval.py` — integration tests with threshold assertions (needs Ollama + ChromaDB).

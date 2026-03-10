@@ -36,6 +36,11 @@ uv run python -m app.cli.mcp_check --message "hello" --cleanup   # deletes test 
 
 # Interactive chat CLI
 uv run python -m app.cli.chat_cli --url http://127.0.0.1:8000/chat
+
+# RAG evaluation
+uv run python -m eval.run_eval                      # full evaluation
+uv run python -m eval.run_eval --retrieval-only      # skip LLM judge (fast)
+uv run python -m eval.run_eval --samples 5           # first N samples only
 ```
 
 ## Architecture
