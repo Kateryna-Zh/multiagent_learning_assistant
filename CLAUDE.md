@@ -103,6 +103,7 @@ Timeout settings: `OLLAMA_TIMEOUT_SECONDS` (30), `CHAT_TIMEOUT_SECONDS` (15, gra
 ## Notable Directories
 
 - `kb/` — Markdown knowledge base files ingested into ChromaDB for RAG.
+- `eval/` — RAG evaluation framework: dataset, metrics, runner, and CLI (see README.md § RAG Evaluation).
 - `specs/` — Design documents and refactoring specs (useful context for understanding past decisions).
 - `chroma_data/` — ChromaDB persistence (gitignored).
 
