@@ -1,4 +1,4 @@
-# agent_claude_sdk
+# multiagent_learning_assistant
 
 ## Setup
 
@@ -15,6 +15,7 @@ Scope: Local-only checks. The CLI writes test rows unless `--cleanup` is used.
 Prerequisites:
 - Local Postgres running and schema applied from `db/init.sql`.
 - MCP server configured via `.env` (see below).
+- This project uses [`pg-mcp-server`](https://github.com/ericzakariasson/pg-mcp-server) as the PostgreSQL MCP server.
 - `MCP_ALLOW_WRITE_OPS=true` for write tests.
 
 Required env keys:
@@ -102,6 +103,7 @@ Runtime behavior:
 
 Notes:
 - pg-mcp-server does not accept query params; when `MCP_SUPPORTS_PARAMS=false`, SQL is inlined safely for local use.
+- MCP server used by this project: [`pg-mcp-server`](https://github.com/ericzakariasson/pg-mcp-server).
 - Keep MCP local-only and never expose it publicly.
 
 ## Agents, Routing, and Orchestration (LangGraph + LangChain)
